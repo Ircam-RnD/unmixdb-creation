@@ -1,13 +1,13 @@
 #!/usr/bin/python
 #
-# makemixes n outbase <sourcefile cue txt>...
+# makemixes n outpath/outbase <sourcefile cue txt in current dir>...
 #
-# create all subsequences of n mixes out of list of sourcefiles
+# create all subsequences of n mixes out of list of sourcefiles (in current dir)
 # named outbase-i.mp3
 #
-# run as:
+# for example, run as:
 # cd data/unmixdb/excerpts/set123/refsongs
-# ../../../../unmixing/create-mix-base/makemixes.py 3 ../mixes/set123mix3 *.txt
+# .../unmixdb-creation/makemixes.py 3 ../mixes/set123mix3 *.txt
 
 import os
 import sys
