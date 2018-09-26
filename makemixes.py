@@ -37,6 +37,6 @@ print('------- mixing %d files into %d sequences of length %d in %d variants (ta
 for ind in range(0, len(seq)):
     for var in variants:
         mixname = '%s-%s-%s-%02d.mp3' % (outbase, var[0], var[1], ind)
-        cmd = ' '.join([mix, var[0], var[1], mixname] + [sourcefiles[s] for s in seq[ind]])
+        cmd = ' '.join([mix, var[0], var[1], mixname] + [(("'%s'") % sourcefiles[s]) for s in seq[ind]])
         print(cmd)
         os.system(cmd)
