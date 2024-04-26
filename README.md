@@ -9,9 +9,9 @@ Description:	A collection of automatically generated DJ mixes with ground truth,
 Authors:	Diemo Schwarz, Dominique Fourer
 Contact email:	schwarz@ircam.fr
 
-Citation:	Please cite as [Diemo Schwarz, Dominique Fourer, UnmixDB: A Dataset for DJ-Mix Information Retrieval, ISMIR late-breaking session, Paris, 2018]
+Publication: Please cite as  [https://zenodo.org/records/1422385/files/schwarz-fourer-ismir2018late-breaking-unmixdb.pdf]([Diemo Schwarz, Dominique Fourer, UnmixDB: A Dataset for DJ-Mix Information Retrieval, ISMIR late-breaking session, Paris, 2018])
 
-Reuse of data:	The dataset has been created based on the mixotic mix collection, and the curational work described in [Reinhard Sonnleitner, Andreas Arzt, and Gerhard Widmer. Landmark-based audio fingerprinting for DJ mix monitoring. In Proceedings of the International Symposium on Music Information Retrieval (ISMIR), New York, NY, 2016]
+Reuse of data:	The dataset has been created from a subset of Creative-Commons licensed tracks and mixes of the mixotic mix collection, based on the curational work described in [Reinhard Sonnleitner, Andreas Arzt, and Gerhard Widmer. Landmark-based audio fingerprinting for DJ mix monitoring. In Proceedings of the International Symposium on Music Information Retrieval (ISMIR), New York, NY, 2016]
 
 
 # VERSION HISTORY
@@ -33,5 +33,8 @@ Each playlist of 3 tracks is mixed 12 times with combinations of 4 variants of e
 The UnmixDB dataset contains the ground truth for the source tracks and mixes in ASCII label format with tab-separated columns starttime, endtime, label.
 For each mix, the start, end, and cue points of the constituent tracks are given, along with their BPM  and speed factors.
 Additionally, the song excerpts are accompanied by their cue region and tempo information.
+
+This figure shows the data flow and file types of the UnmixDB dataset used by the python scripts in this repository:
+![The data flow and file types of the UnmixDB dataset](./unmixdb-creation.png The data flow and file types of the UnmixDB dataset)
 
 Our DJ mix dataset is based on the curatorial work of Sonnleitner et. al. 2016, who collected Creative-Commons licensed source tracks of 10 free dance music mixes from Mixotic. We used their collected tracks to produce our track excerpts, but regenerated artificial mixes with perfectly accurate ground truth.
