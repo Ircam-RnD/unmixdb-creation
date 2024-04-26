@@ -14,7 +14,7 @@ import sys
 from math import *
 
 scriptdir = os.path.dirname(__file__)
-mix = '"%s/create-mix.py"' % scriptdir # needs to be in same dir
+mixcmd = '"%s/create-mix.py"' % scriptdir # needs to be in same dir
 
 mixlen = int(sys.argv[1])
 outbase = sys.argv[2]
@@ -26,6 +26,7 @@ seq = []
 for i in range(0, numfiles):
     seq.append(map(lambda x: x % numfiles, range(i, i+mixlen)))
 
+# list of pairs of time scale method, effect
 variants = [('none', 'none'), ('none', 'bass'), ('none', 'compressor'), ('none', 'distortion'),
             ('resample', 'none'), ('resample', 'bass'), ('resample', 'compressor'), ('resample', 'distortion'),
             ('stretch', 'none'), ('stretch', 'bass'), ('stretch', 'compressor'), ('stretch', 'distortion')]
@@ -36,7 +37,9 @@ print('------- mixing %d files into %d sequences of length %d in %d variants (ta
 # call create-mix on all subsequences
 for ind in range(0, len(seq)):
     for var in variants:
-        mixname = '%s-%s-%s-%02d.mp3' % (outbase, var[0], var[1], ind)
-        cmd = ' '.join([mix, var[0], var[1], mixname] + [(("'%s'") % sourcefiles[s]) for s in seq[ind]])
+        ts = var[0]
+        fx = var[1]
+        mixname = '%s-%s-%s-%02d.mp3' % (outbase, ts, fx, ind)
+        cmd = ' '.join([mixcmd, ts, fx, mixname] + [(("'%s'") % sourcefiles[s]) for s in seq[ind]])
         print(cmd)
-        os.system(cmd)
+        os.system(cmd) # call create-mix.py
