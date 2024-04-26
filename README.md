@@ -9,7 +9,7 @@ Description:	A collection of automatically generated DJ mixes with ground truth,
 Authors:	Diemo Schwarz, Dominique Fourer
 Contact email:	schwarz@ircam.fr
 
-Publication: Please cite as [https://zenodo.org/records/1422385/files/schwarz-fourer-ismir2018late-breaking-unmixdb.pdf]([Diemo Schwarz, Dominique Fourer, UnmixDB: A Dataset for DJ-Mix Information Retrieval, ISMIR late-breaking session, Paris, 2018])
+Publication: Please cite as [[Diemo Schwarz, Dominique Fourer, UnmixDB: A Dataset for DJ-Mix Information Retrieval, ISMIR late-breaking session, Paris, 2018]](https://zenodo.org/records/1422385/files/schwarz-fourer-ismir2018late-breaking-unmixdb.pdf)
 
 Reuse of data:	The dataset has been created from a subset of Creative-Commons licensed tracks and mixes of the mixotic mix collection, based on the curational work described in [Reinhard Sonnleitner, Andreas Arzt, and Gerhard Widmer. Landmark-based audio fingerprinting for DJ mix monitoring. In Proceedings of the International Symposium on Music Information Retrieval (ISMIR), New York, NY, 2016]
 
