@@ -19,6 +19,8 @@ Reuse of data:	The dataset has been created from a subset of Creative-Commons li
 
 # DOCUMENTATION
 
+See also the article [[Diemo Schwarz, Dominique Fourer, UnmixDB: A Dataset for DJ-Mix Information Retrieval, ISMIR late-breaking session, Paris, 2018]](https://zenodo.org/records/1422385/files/schwarz-fourer-ismir2018late-breaking-unmixdb.pdf).
+
 In order to evaluate the DJ mix analysis and reverse engineering methods described above, we created a dataset of excerpts of open licensed dance tracks and automatically generated mixes based on these.
 
 We use track excerpts because of the runtime and memory requirements, especially for the DTW, which is of quadratic memory complexity. We could not have scaled the dataset up to the many playlists and variants when using full tracks.
