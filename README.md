@@ -32,12 +32,64 @@ The first track's BPM is used as the seed tempo onto which the other tracks are 
 
 Each playlist of 3 tracks is mixed 12 times with combinations of 4 variants of effects and 3 variants of time scaling using the treatments of the sox open source command-line program [http://sox.sourceforge.net].
 
-The UnmixDB dataset contains the ground truth for the source tracks and mixes in ASCII label format with tab-separated columns starttime, endtime, label.
-For each mix, the start, end, and cue points of the constituent tracks are given, along with their BPM  and speed factors.
-Additionally, the song excerpts are accompanied by their cue region and tempo information.
+The UnmixDB dataset contains the ground truth for the source tracks and mixes in the `.labels.txt` files. 
+Additionally, the song excerpts are accompanied by their cue region and tempo information in the `.cue.txt` files (see below).
 
 This figure shows the data flow and file types of the UnmixDB dataset used by the python scripts in this repository:
 
 ![The data flow and file types of the UnmixDB dataset](./unmixdb-creation.png)
 
+# File Formats
+
+The ground truth for the source tracks and mixes in the `.labels.txt` files are in ASCII label format (as used in the _Audacity_ audio editor) with tab-separated columns _starttime, endtime, track, label, parameters_.
+
+Example:
+
+```
+-2.27415963589999981	-2.27415963589999981	1	start	"07_Sr_Click_-_Tibetan_-_Antiritmo024.excerpt40.mp3"
+-2.27415963589999981	-2.27415963589999981	1	speed	1
+ 0.00000000000000000	 0.00000000000000000	1	bpm	127.937802416
+ 0.00000000000000000	 7.61034013609999960	1	fadein	
+20.73541950110000087	20.73541950110000087	1	cutpoint	
+28.73608979710000000	28.73608979710000000	2	start	"08_Banding_-_Eula_-_Antiritmo024.excerpt40.mp3"
+28.73608979710000000	28.73608979710000000	2	speed	1.015
+32.00870748290000023	38.99791383219999830	1	fadeout	
+32.00870748290000023	39.39265306109999898	2	fadein	
+41.50416235950000043	41.50416235950000043	1	stop	"07_Sr_Click_-_Tibetan_-_Antiritmo024.excerpt40.mp3"
+52.31455782300000124	52.31455782300000124	2	cutpoint	
+60.81445714400000213	60.81445714400000213	3	start	"01_Choenyi_-_PA_To_M_-_Antiritmo024.excerpt40.mp3"
+60.81445714400000213	60.81445714400000213	3	speed	0.956
+63.49496598630000221	70.87891156450000096	2	fadeout	
+63.49496598630000221	70.52480725610000434	3	fadein	
+73.69862947960000099	73.69862947960000099	2	stop	"08_Banding_-_Eula_-_Antiritmo024.excerpt40.mp3"
+83.64988662120001095	83.64988662120001095	3	cutpoint	
+94.89414965970000537	102.45224489779999999	3	fadeout	
+104.62124172450000970	104.62124172450000970	3	stop	"01_Choenyi_-_PA_To_M_-_Antiritmo024.excerpt40.mp3"
+```
+
+Here, the start/end time is in seconds, the track column determines which of the source tracks are concerned, the label determines the type of information given, followed by an optional parameter column.
+For each mix, the start, end, and cue points of the constituent tracks are given, along with their BPM  and speed factors.
+The meanings of the labels and parameters are:
+
+| start   | _filename_		  | (virtual) start time of track in mix	|
+| speed   | _speed factor_	  | playback speed factor of the referenced track at that point in time	|
+| bpm     | _beats per minute_ | source tempo of the track	|
+| fadein  |					  | track fades in between start and end time	|
+| fadeout |					  | track fades out between start and end time	|
+| stop    | _filename_		  | end time of track in mix	|
+| cutpoint |				  | marker where the track excerpts were spliced 	|
+
+Additionally, the song excerpts are accompanied by their cue region and tempo information in the `.cue.txt` files with a tab-separated header line giving the names of the columns, and one row of tab-separated data.
+
+Example:
+
+```
+filename	bpm	cueinstart	cueinend	cutpoint	joinpoint	cueoutstart	cueoutend	duration
+"04_Vizar_-_Ghosts_-_Antiritmo018.excerpt40.mp3"	122.11588408	2.3786494318	9.7625950101	22.5451800441	309.381279817	33.8591029466	41.7248625838	43.7173696146
+```
+
+# Acknowledgements
+
 Our DJ mix dataset is based on the curatorial work of Sonnleitner et. al. 2016, who collected Creative-Commons licensed source tracks of 10 free dance music mixes from Mixotic. We used their collected tracks to produce our track excerpts, but regenerated artificial mixes with perfectly accurate ground truth.
+
+This dataset was created within the [ABC_DJ project](https://abcdj.eu/) which has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 688122.
