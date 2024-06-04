@@ -71,6 +71,8 @@ Here, the start/end time is in seconds, the track column determines which of the
 For each mix, the start, end, and cue points of the constituent tracks are given, along with their BPM  and speed factors.
 The meanings of the labels and parameters are:
 
+| Label   | Parameter		  | Definition |
+|---------|-------------------|------------|
 | start   | _filename_		  | (virtual) start time of track in mix	|
 | speed   | _speed factor_	  | playback speed factor of the referenced track at that point in time	|
 | bpm     | _beats per minute_ | source tempo of the track	|
