@@ -15,7 +15,8 @@ Reuse of data:	The dataset has been created from a subset of Creative-Commons li
 
 
 # VERSION HISTORY
-20-09-2018	v1	first publication
+20-09-2018	v1		first publication
+26-10-2024	v1.1	correction: define subset of mixes without long silences
 
 # DOCUMENTATION
 
@@ -89,6 +90,15 @@ Example:
 filename	bpm	cueinstart	cueinend	cutpoint	joinpoint	cueoutstart	cueoutend	duration
 "04_Vizar_-_Ghosts_-_Antiritmo018.excerpt40.mp3"	122.11588408	2.3786494318	9.7625950101	22.5451800441	309.381279817	33.8591029466	41.7248625838	43.7173696146
 ```
+
+## Version unmixdb-v1.1
+
+Version 1 of unmixdb has a few mixes that weren't generated correctly and contain missing tracks (silent parts of ~20s length).  Additionally, some tracks start or end with a few seconds of silence.  As this can perturb alignment and unmixing algorithms, unmixdb v1.1 defines a subset of _good_ mixes.
+In directory `unmixdb-v1.1`, the text file `unmixdb-v1.1-goodmixes-silence-less-than-4s.csv` contains a list of mixes with not longer than 4s of silence (where RMS is < -70dB).
+
+Creation:
+1. The script `check-silence.py` analyses the RMS of all mixes and writes tables `files` and `chunks` (silent segments).
+2. The script `goodmixes.py` filters out mixes with silence above a given threshold and writes `unmixdb-v1.1-goodmixes-silence-less-than-4s`.
 
 # Acknowledgements
 
