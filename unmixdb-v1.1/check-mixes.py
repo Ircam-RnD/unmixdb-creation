@@ -1,18 +1,17 @@
-#!/python3
+#!pythonw
 
-# check for long silent parts
-import os
+# check for long silent parts in mixes
 import glob
 import pandas as pd
-import matplotlib.pyplot as plt
-from check-silence import find_runs, find_silence
+from check_silence import find_runs, find_silence
 
 # CONFIG:
 # set this to where your unmixdb has been downloaded
-unmixdbdir = '../unmixdb/'
+unmixdbdir = '../../unmixdb/'
 
 # main loop over mix dirs
 setdirs = glob.glob(unmixdbdir + 'mixotic-set*-excerpts')
+print(f'Starting to analyse {len(setdirs)} setdirs: {setdirs}')
 
 # output dataframes
 files  = pd.DataFrame([], columns = ['mixname', 'sr', 'samples'])
@@ -22,9 +21,6 @@ for sdir in setdirs:
     mixdir = sdir + '/mixes/'
     mp3list = glob.glob(mixdir + '*.mp3')
     print(f'----- checking {len(mp3list)} mixes in {mixdir}')
-
-    n = 3
-    m = np.ceil(len(mp3list) / n)
 
     # get matrix of all files rfi, all silent chunks res
     rfi, res = find_silence(mp3list, -70, prefix = unmixdbdir)

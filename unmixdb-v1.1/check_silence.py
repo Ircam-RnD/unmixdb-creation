@@ -1,7 +1,10 @@
+import os
+import re
 import soundfile
 import librosa
 import numpy as np
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 def find_runs (cond):
     _, i, c = np.unique(np.r_[[0], cond[:-1] != cond[1:]].cumsum(),
@@ -17,7 +20,7 @@ def find_runs (cond):
 # array res    ['filename', 'start', 'length', 'duration']: all silent chunks
 # prefix will be removed from file names
 
-def rfiles, res = find_silence (mp3list, thresh, prefix = '', winsize = 4096, hopsize = 4096, plot = False):
+def find_silence (mp3list, thresh, prefix = '', winsize = 4096, hopsize = 4096, plot = None):
 
     # to clean up file prefix
     pre = re.compile(prefix)
@@ -25,7 +28,7 @@ def rfiles, res = find_silence (mp3list, thresh, prefix = '', winsize = 4096, ho
     res    = [ ]
     rfiles = [ ]
     
-    for i, mp3name in enumerate(mp3list):
+    for i, mp3name in tqdm(enumerate(mp3list)):
         y, sr = soundfile.read(mp3name)
         basepath = pre.sub('', mp3name) # path with prefix removed
 
@@ -37,7 +40,9 @@ def rfiles, res = find_silence (mp3list, thresh, prefix = '', winsize = 4096, ho
         # Extract RMS, convert to dB (clip at -120dB)
         rms = np.squeeze(20 * np.log10(librosa.feature.rms(y=y, frame_length=winsize, hop_length=hopsize) + 1e-6))
         #print(rms.shape, min(rms), max(rms))
-        if plot:
+        if plot is not None :
+            m = plot[0]
+            n = plot[1]
             plt.subplot(m, n, i + 1)
             plt.plot(np.squeeze(rms))
             plt.title(f'{i} ' + os.path.basename(mp3name))
@@ -53,8 +58,8 @@ def rfiles, res = find_silence (mp3list, thresh, prefix = '', winsize = 4096, ho
             res.append([ basepath, sstart, sdur, tdur ])
         
             if tdur > 1:
-                print(f'{i:3} start {tstart: >5.1f} duration {tdur: >5.1f}  {basepath}')
-                if plot:
+                tqdm.write(str(f'{i:3} start {tstart: >5.1f} duration {tdur: >5.1f}  {basepath}'.encode('utf-8')))
+                if plot is not None:
                     plt.axvspan(start, start + count, facecolor=(1, 0.1, 0.2, 0.7))
 
     return rfiles, res
