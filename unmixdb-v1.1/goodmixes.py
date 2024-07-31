@@ -74,20 +74,36 @@ print(f'num total tracks: {len(tracks):4}, num good tracks with less than {silen
 # problem: some labels have no mp3!!! labelfiles = glob.glob(unmixdbdir + 'mixotic-set*/mixes/*.labels.txt')
 mixfiles = glob.glob(unmixdbdir + 'mixotic-set*/mixes/*.mp3')
 
-mix_to_track = pd.DataFrame([ ], columns = ['mixname', 'trackpos', 'trackname'])
+if len(mixfiles) > 0:
+    
+    mix_to_track = pd.DataFrame([ ], columns = ['mixname', 'trackpos', 'trackname'])
 
-for mixname in tqdm(mixfiles):
-    new = load_labels(mixname, unmixdbdir)
-    mix_to_track = pd.concat([mix_to_track, new], ignore_index=True)
+    for mixname in tqdm(mixfiles):
+        new = load_labels(mixname, unmixdbdir)
+        mix_to_track = pd.concat([mix_to_track, new], ignore_index=True)
 
-print(mix_to_track)
+        print(mix_to_track)
 
-mix_to_track.to_csv  (path_or_buf='mixtotrack.csv', sep='\t')
-mix_to_track.to_json (path_or_buf='mixtotrack.json', orient='records')
-
+        mix_to_track.to_csv  (path_or_buf='mixtotrack.csv', sep='\t')
+        mix_to_track.to_json (path_or_buf='mixtotrack.json', orient='records')
+else:
+    print('no mixfiles present, not rewriting mixtotrack')
 
 
 ### 3. find mixes containing any track with long silence
+
+# re-read into dataframes
+mix_to_track = pd.read_csv  ('mixtotrack.csv', sep='\t', index_col=0)
+goodmixes    = pd.read_csv  ('unmixdb-v1.1-goodmixes-silence-less-than-4s.csv', sep='\t', header=None)
+goodtracks   = pd.read_csv  ('unmixdb-v1.1-goodtracks-silence-less-than-4s.csv', sep='\t', header=None)
+
+print('\nmix_to_track\n', mix_to_track)
+print('\ngoodmixes\n', goodmixes)
+print('\ngoodtracks\n', goodtracks)
+
+# filter by good mixes
+goodmtt = mix_to_track.query('mixname in @goodmixes[0]')
+print('\ngoodmtt\n', goodmtt, len(goodmtt) / 3, len(goodmixes))
 
 # remove path in goodtracks list to match labels file trackname
 goodtrackbase = goodtracks[0].apply(lambda x: os.path.basename(x))
