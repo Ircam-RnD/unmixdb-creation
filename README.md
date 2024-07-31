@@ -94,11 +94,12 @@ filename	bpm	cueinstart	cueinend	cutpoint	joinpoint	cueoutstart	cueoutend	durati
 ## Version unmixdb-v1.1
 
 Version 1 of unmixdb has a few mixes that weren't generated correctly and contain missing tracks (silent parts of ~20s length).  Additionally, some tracks start or end with a few seconds of silence.  As this can perturb alignment and unmixing algorithms, unmixdb v1.1 defines a subset of _good_ mixes.
-In directory `unmixdb-v1.1`, the text file `unmixdb-v1.1-goodmixes-silence-less-than-4s.csv` contains a list of mixes with not longer than 4s of silence (where RMS is < -70dB).
+In directory `unmixdb-v1.1`, the text file `unmixdb-v1.1-goodmixes-with-tracks-with-silence-less-than-1s.txt` contains a list of mixes with not longer than 4s of silence (where RMS is < -70dB) and containing no tracks with silences longer than 1s.
 
 Creation:
-1. The script `check-silence.py` analyses the RMS of all mixes and writes tables `files` and `chunks` (silent segments).
-2. The script `goodmixes.py` filters out mixes with silence above a given threshold and writes `unmixdb-v1.1-goodmixes-silence-less-than-4s`.
+1. The script `check-mixes.py` analyses the RMS of all mixes and writes tables `allmixes` and `allmixsilencechunks` (silent segments) in csv and json formats.
+2. The script `check-tracks.py` analyses the RMS of all tracks and writes tables `alltracks` and `alltracksilencechunks` (silent segments).
+3. The script `goodmixes.py` reads above files, reads all labels.txt files, and filters out mixes with silence above a given threshold and using tracks with silent segments and writes `unmixdb-v1.1-goodmixes-with-tracks-with-silence-less-than-1s`.
 
 # Acknowledgements
 
