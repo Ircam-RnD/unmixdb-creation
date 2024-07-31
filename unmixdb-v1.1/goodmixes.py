@@ -1,7 +1,18 @@
+# Clean unmixdb from Mixes containing Tracks with silence
+"""
+- more stringent than just removing mixes with silence > 4s
+- silent parts in tracks are not realistic in a DJ mix and throw off the NMF unmixing algorithm
+- will write 3 tables:
+  1. all track names
+  2. all silent chunks in tracks
+  3. all mixes to track mappings
+- query will filter mixes containing any track with long silence
+- re-filter against mixes with long silences (from sox failures)
+"""
 
-# join 2 dataframes to find *good* mixes without too long silence
-import glob
+import os
 import re
+import glob
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
@@ -26,19 +37,7 @@ def get_good (filecsv, chunkcsv, column, silencethres):
     return goodfiles, files, chunks
 
 
-goodmixes,  mixes, mixchunks    = get_good(v11dir + 'allmixes.csv', v11dir + 'allmixsilencechunks.csv',    'mixname',   silencethresh)
-goodtracks, tracks, trackchunks = get_good(v11dir + 'alltracks.csv', v11dir + 'alltracksilencechunks.csv', 'trackname', trsilencethresh)
-
-# write list of good mixes and tracks to text files
-goodmixes.to_csv(v11dir + f'unmixdb-v1.1-goodmixes-silence-less-than-{silencethresh:g}s.csv', columns = ['mixname'], header = False, index = False)
-goodtracks.to_csv(v11dir + f'unmixdb-v1.1-goodtracks-silence-less-than-{silencethresh:g}s.csv', columns = ['trackname'], header = False, index = False)
-
-print(f'num total mixes:  {len(mixes):4}, num good mixes  with less than {silencethresh}s of silence: {len(goodmixes):4}, num dropped mixes:  {len(mixes) - len(goodmixes):4}')
-print(f'num total tracks: {len(tracks):4}, num good tracks with less than {silencethresh}s of silence: {len(goodtracks):4}, num dropped tracks: {len(tracks) - len(goodtracks):4}')
-
-
 # load all mix label files, scan "start" with track name, write dataframe with mixname, trackname, trackpos
-
 def load_labels (mixname, prefix):
 
     # find label file name from mp3 mixname
@@ -57,6 +56,21 @@ def load_labels (mixname, prefix):
     return trstart
 
 
+### 1. join 2 dataframes written by check-mixes and check-tracks to find *good* mixes without too long silence
+
+goodmixes,  mixes, mixchunks    = get_good(v11dir + 'allmixes.csv', v11dir + 'allmixsilencechunks.csv',    'mixname',   silencethresh)
+goodtracks, tracks, trackchunks = get_good(v11dir + 'alltracks.csv', v11dir + 'alltracksilencechunks.csv', 'trackname', trsilencethresh)
+
+# write list of good mixes and tracks to text files
+goodmixes.to_csv(v11dir + f'unmixdb-v1.1-goodmixes-silence-less-than-{silencethresh:g}s.csv', columns = ['mixname'], header = False, index = False)
+goodtracks.to_csv(v11dir + f'unmixdb-v1.1-goodtracks-silence-less-than-{silencethresh:g}s.csv', columns = ['trackname'], header = False, index = False)
+
+print(f'num total mixes:  {len(mixes):4}, num good mixes  with less than {silencethresh}s of silence: {len(goodmixes):4}, num dropped mixes:  {len(mixes) - len(goodmixes):4}')
+print(f'num total tracks: {len(tracks):4}, num good tracks with less than {silencethresh}s of silence: {len(goodtracks):4}, num dropped tracks: {len(tracks) - len(goodtracks):4}')
+
+
+### 2. create mix-to-track relation
+
 # problem: some labels have no mp3!!! labelfiles = glob.glob(unmixdbdir + 'mixotic-set*/mixes/*.labels.txt')
 mixfiles = glob.glob(unmixdbdir + 'mixotic-set*/mixes/*.mp3')
 
@@ -71,3 +85,20 @@ print(mix_to_track)
 mix_to_track.to_csv  (path_or_buf='mixtotrack.csv', sep='\t')
 mix_to_track.to_json (path_or_buf='mixtotrack.json', orient='records')
 
+
+
+### 3. find mixes containing any track with long silence
+
+# remove path in goodtracks list to match labels file trackname
+goodtrackbase = goodtracks[0].apply(lambda x: os.path.basename(x))
+print('goodtrackbase\n', goodtrackbase)
+
+badmixes = goodmtt.query('trackname not in @goodtrackbase')
+print('\nbadmixes\n', badmixes)
+
+# get unique mix names
+badmixu = pd.unique(badmixes['mixname'])
+print(f'num mixes {len(mix_to_track) / 3}  num good mixes {len(goodmixes)}  num bad track mixes {len(badmixu)}  num final good mixes {len(goodmixes) - len(badmixu)}')
+
+goodmixfinal = goodmixes[~goodmixes[0].isin(badmixu)]
+goodmixfinal.to_csv(f'unmixdb-v1.1-goodmixes-tracks-with-silence-less-than-{silencethresh:g}s.csv', columns = [0], header = False, index = False)
